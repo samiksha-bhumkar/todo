@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
+
+// Make sure the filename matches exactly: todoController.js
 const {
   getTodos,
   addTodo,
   updateTodo,
   deleteTodo,
-} = require("../controllers/todoController");
+} = require("../controllers/todoController"); // <-- check capitalization
 
 // Routes
 router.get("/", getTodos);
