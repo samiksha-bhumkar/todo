@@ -1,40 +1,74 @@
-const mongoose = require("mongoose");
+// backend/controllers/todoController.js
+import Todo from "../models/todoModel.js";
 
-// Example in-memory Todo model
-// You can replace this with a real MongoDB schema if you have one
-let todos = [
-  { id: 1, title: "Sample Todo", completed: false },
-];
-
-// GET /todos
-const getTodos = (req, res) => {
-  res.json(todos);
+// =========================
+// ✅ Get all todos
+// =========================
+export const getTodos = async (req, res) => {
+  try {
+    const todos = await Todo.find();
+    res.status(200).json(todos);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching todos", error: err.message });
+  }
 };
 
-// POST /todos
-const addTodo = (req, res) => {
-  const { title } = req.body;
-  const newTodo = { id: Date.now(), title, completed: false };
-  todos.push(newTodo);
-  res.status(201).json(newTodo);
+// =========================
+// ✅ Add a new todo
+// =========================
+export const addTodo = async (req, res) => {
+  try {
+    if (!req.body.title || req.body.title.trim() === "") {
+      return res.status(400).json({ message: "Title is required" });
+    }
+
+    const newTodo = new Todo({
+      title: req.body.title,
+      completed: false,
+    });
+
+    const savedTodo = await newTodo.save();
+    res.status(201).json(savedTodo);
+  } catch (err) {
+    res.status(400).json({ message: "Error creating todo", error: err.message });
+  }
 };
 
-// PUT /todos/:id
-const updateTodo = (req, res) => {
-  const { id } = req.params;
-  const { title, completed } = req.body;
-  const todo = todos.find((t) => t.id == id);
-  if (!todo) return res.status(404).json({ message: "Todo not found" });
-  if (title !== undefined) todo.title = title;
-  if (completed !== undefined) todo.completed = completed;
-  res.json(todo);
+// =========================
+// ✅ Update todo by ID
+// =========================
+export const updateTodo = async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
+
+    if (!todo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    todo.title = req.body.title ?? todo.title;
+    todo.completed = req.body.completed ?? todo.completed;
+
+    const updatedTodo = await todo.save();
+    res.status(200).json(updatedTodo);
+  } catch (err) {
+    res.status(400).json({ message: "Error updating todo", error: err.message });
+  }
 };
 
-// DELETE /todos/:id
-const deleteTodo = (req, res) => {
-  const { id } = req.params;
-  todos = todos.filter((t) => t.id != id);
-  res.json({ message: "Todo deleted" });
-};
+// =========================
+// ✅ Delete todo by ID
+// =========================
+export const deleteTodo = async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
 
-module.exports = { getTodos, addTodo, updateTodo, deleteTodo };
+    if (!todo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    await todo.deleteOne();
+    res.status(200).json({ message: "Todo deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting todo", error: err.message });
+  }
+};
