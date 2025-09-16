@@ -15,8 +15,9 @@ app.use(express.json());
 // CORS configuration
 app.use(cors({
   origin: [
-    "http://localhost:5173", // Vite dev
-    "https://todolist-5zk3j1ft1-samiksha-bhumkars-projects.vercel.app" // Vercel frontend
+     "https://todolist-erd2b7j3k-samiksha-bhumkars-projects.vercel.app/", // Vercel frontend
+    "http://localhost:5173"// Vite dev
+   
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"]
