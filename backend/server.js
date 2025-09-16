@@ -3,29 +3,29 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import todoRoutes from "./routes/todoRoutes.js"; // note the .js extension
+import todoRoutes from "./routes/todoRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
-// ✅ Middleware
+// Middleware
 app.use(express.json());
 
-// ✅ CORS configuration (allow both local dev + deployed frontend)
+// CORS configuration
 app.use(cors({
   origin: [
-    "http://localhost:5173", // your Vite dev server
-    "https://todolist-5zk3j1ft1-samiksha-bhumkars-projects.vercel.app" // your Vercel app
+    "http://localhost:5173", // Vite dev
+    "https://todolist-5zk3j1ft1-samiksha-bhumkars-projects.vercel.app" // Vercel frontend
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"]
 }));
 
-// ✅ Routes (choose ONE: /todos OR /api/todos, must match frontend API_URL)
+// Routes (prefix all API routes with /api/todos)
 app.use("/api/todos", todoRoutes);
 
-// ✅ MongoDB connection
+// MongoDB connection
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -34,10 +34,10 @@ mongoose
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ✅ Default route
+// Default route
 app.get("/", (req, res) => {
   res.send("Backend is running!");
 });
 
-// ✅ Start server
+// Start server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

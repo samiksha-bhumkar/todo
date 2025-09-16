@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Check, Undo, Edit2, Trash2, PlusCircle } from "lucide-react";
 
-const API_URL = "https://todo-81hc.onrender.com/";
+const API_URL = "https://todo-81hc.onrender.com/api/todos"; // Fixed URL
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -50,10 +50,7 @@ function App() {
         </h1>
 
         {/* Add Todo */}
-        <form
-          onSubmit={addTodo}
-          className="flex gap-3 items-center mb-8"
-        >
+        <form onSubmit={addTodo} className="flex gap-3 items-center mb-8">
           <input
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
@@ -83,82 +80,46 @@ function App() {
 
         {/* Todo Lists */}
         <div className="grid grid-cols-2 gap-6">
-          {/* Pending Todos */}
+          {/* Pending */}
           <div>
-            <h2 className="text-xl font-bold text-yellow-600 mb-3">
-              📝 Pending
-            </h2>
+            <h2 className="text-xl font-bold text-yellow-600 mb-3">📝 Pending</h2>
             <ul className="space-y-3">
-              {todos
-                .filter((t) => !t.completed)
-                .map((t) => (
-                  <li
-                    key={t._id}
-                    className="flex justify-between items-center p-3 bg-yellow-50 rounded-xl shadow-sm border hover:shadow-md transition"
-                  >
-                    <span className="font-medium">{t.title}</span>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => toggleTodo(t._id, t.completed)}
-                        className="text-green-600 hover:scale-110 transition"
-                        title="Mark Completed"
-                      >
-                        <Check size={20} />
-                      </button>
-                      <button
-                        onClick={() => editTodo(t._id, t.title)}
-                        className="text-indigo-600 hover:scale-110 transition"
-                        title="Edit"
-                      >
-                        <Edit2 size={20} />
-                      </button>
-                      <button
-                        onClick={() => deleteTodo(t._id)}
-                        className="text-red-600 hover:scale-110 transition"
-                        title="Delete"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                  </li>
-                ))}
+              {todos.filter(t => !t.completed).map(t => (
+                <li key={t._id} className="flex justify-between items-center p-3 bg-yellow-50 rounded-xl shadow-sm border hover:shadow-md transition">
+                  <span className="font-medium">{t.title}</span>
+                  <div className="flex gap-3">
+                    <button onClick={() => toggleTodo(t._id, t.completed)} className="text-green-600 hover:scale-110 transition" title="Mark Completed">
+                      <Check size={20} />
+                    </button>
+                    <button onClick={() => editTodo(t._id, t.title)} className="text-indigo-600 hover:scale-110 transition" title="Edit">
+                      <Edit2 size={20} />
+                    </button>
+                    <button onClick={() => deleteTodo(t._id)} className="text-red-600 hover:scale-110 transition" title="Delete">
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Completed Todos */}
+          {/* Completed */}
           <div>
-            <h2 className="text-xl font-bold text-green-600 mb-3">
-              ✅ Completed
-            </h2>
+            <h2 className="text-xl font-bold text-green-600 mb-3">✅ Completed</h2>
             <ul className="space-y-3">
-              {todos
-                .filter((t) => t.completed)
-                .map((t) => (
-                  <li
-                    key={t._id}
-                    className="flex justify-between items-center p-3 bg-green-50 rounded-xl shadow-sm border hover:shadow-md transition"
-                  >
-                    <span className="line-through text-gray-600">
-                      {t.title}
-                    </span>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => toggleTodo(t._id, t.completed)}
-                        className="text-yellow-600 hover:scale-110 transition"
-                        title="Undo"
-                      >
-                        <Undo size={20} />
-                      </button>
-                      <button
-                        onClick={() => deleteTodo(t._id)}
-                        className="text-red-600 hover:scale-110 transition"
-                        title="Delete"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                  </li>
-                ))}
+              {todos.filter(t => t.completed).map(t => (
+                <li key={t._id} className="flex justify-between items-center p-3 bg-green-50 rounded-xl shadow-sm border hover:shadow-md transition">
+                  <span className="line-through text-gray-600">{t.title}</span>
+                  <div className="flex gap-3">
+                    <button onClick={() => toggleTodo(t._id, t.completed)} className="text-yellow-600 hover:scale-110 transition" title="Undo">
+                      <Undo size={20} />
+                    </button>
+                    <button onClick={() => deleteTodo(t._id)} className="text-red-600 hover:scale-110 transition" title="Delete">
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
