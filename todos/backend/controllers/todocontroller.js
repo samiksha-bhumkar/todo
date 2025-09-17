@@ -1,48 +1,58 @@
-const Todo = require("../models/Todo");
+// project/todos/backend/controllers/todoController.js
+import Todo from "../models/todoModel.js";
 
-// Get all todos
-exports.getTodos = async (req, res) => {
+// GET all todos
+export const getTodos = async (req, res) => {
   try {
-    const todos = await Todo.find();
+    const todos = await Todo.find().sort({ createdAt: -1 });
     res.json(todos);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: "Error fetching todos", error: err.message });
   }
 };
 
-// Add new todo
-exports.addTodo = async (req, res) => {
+// ADD new todo
+export const addTodo = async (req, res) => {
   try {
-    const newTodo = new Todo({ title: req.body.title });
-    await newTodo.save();
+    const { title } = req.body;
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: "Title is required" });
+    }
+
+    const newTodo = await Todo.create({ title: title.trim() });
     res.status(201).json(newTodo);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: "Error creating todo", error: err.message });
   }
 };
 
-// ✅ Update / Toggle todo
-exports.updateTodo = async (req, res) => {
+// UPDATE todo (toggle completed or update title)
+export const updateTodo = async (req, res) => {
   try {
-    const todo = await Todo.findById(req.params.id);
-    if (!todo) return res.status(404).json({ message: "Todo not found" });
+    const { id } = req.params;
+    const update = {};
 
-    // toggle status
-    todo.completed = !todo.completed;
-    await todo.save();
+    // Accept partial updates (title and/or completed)
+    if (req.body.title !== undefined) update.title = String(req.body.title).trim();
+    if (req.body.completed !== undefined) update.completed = Boolean(req.body.completed);
 
-    res.json(todo);
+    const updated = await Todo.findByIdAndUpdate(id, update, { new: true });
+    if (!updated) return res.status(404).json({ message: "Todo not found" });
+
+    res.json(updated);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: "Error updating todo", error: err.message });
   }
 };
 
-// Delete todo
-exports.deleteTodo = async (req, res) => {
+// DELETE todo by id
+export const deleteTodo = async (req, res) => {
   try {
-    await Todo.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    const removed = await Todo.findByIdAndDelete(id);
+    if (!removed) return res.status(404).json({ message: "Todo not found" });
     res.json({ message: "Todo deleted" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: "Error deleting todo", error: err.message });
   }
 };
