@@ -1,73 +1,57 @@
-// backend/controllers/todoController.js
+// project/todos/backend/controllers/todoController.js
 import Todo from "../models/todoModel.js";
 
-// =========================
-// ✅ Get all todos
-// =========================
+// GET all todos
 export const getTodos = async (req, res) => {
   try {
     const todos = await Todo.find();
-    res.status(200).json(todos);
+    res.json(todos);
   } catch (err) {
     res.status(500).json({ message: "Error fetching todos", error: err.message });
   }
 };
 
-// =========================
-// ✅ Add a new todo
-// =========================
+// ADD new todo
 export const addTodo = async (req, res) => {
   try {
-    if (!req.body.title || req.body.title.trim() === "") {
+    const { title } = req.body;
+    if (!title || !title.trim()) {
       return res.status(400).json({ message: "Title is required" });
     }
 
-    const newTodo = new Todo({
-      title: req.body.title,
-      completed: false,
-    });
-
-    const savedTodo = await newTodo.save();
-    res.status(201).json(savedTodo);
+    const newTodo = await Todo.create({ title: title.trim() });
+    res.status(201).json(newTodo);
   } catch (err) {
-    res.status(400).json({ message: "Error creating todo", error: err.message });
+    res.status(500).json({ message: "Error creating todo", error: err.message });
   }
 };
 
-// =========================
-// ✅ Update todo by ID
-// =========================
+// UPDATE todo (toggle completed or update title)
 export const updateTodo = async (req, res) => {
   try {
-    const todo = await Todo.findById(req.params.id);
+    const { id } = req.params;
+    const update = {};
 
-    if (!todo) {
-      return res.status(404).json({ message: "Todo not found" });
-    }
+    // Accept partial updates (title and/or completed)
+    if (req.body.title !== undefined) update.title = String(req.body.title).trim();
+    if (req.body.completed !== undefined) update.completed = Boolean(req.body.completed);
 
-    todo.title = req.body.title ?? todo.title;
-    todo.completed = req.body.completed ?? todo.completed;
+    const updated = await Todo.findByIdAndUpdate(id, update, { new: true });
+    if (!updated) return res.status(404).json({ message: "Todo not found" });
 
-    const updatedTodo = await todo.save();
-    res.status(200).json(updatedTodo);
+    res.json(updated);
   } catch (err) {
-    res.status(400).json({ message: "Error updating todo", error: err.message });
+    res.status(500).json({ message: "Error updating todo", error: err.message });
   }
 };
 
-// =========================
-// ✅ Delete todo by ID
-// =========================
+// DELETE todo by id
 export const deleteTodo = async (req, res) => {
   try {
-    const todo = await Todo.findById(req.params.id);
-
-    if (!todo) {
-      return res.status(404).json({ message: "Todo not found" });
-    }
-
-    await todo.deleteOne();
-    res.status(200).json({ message: "Todo deleted successfully" });
+    const { id } = req.params;
+    const removed = await Todo.findByIdAndDelete(id);
+    if (!removed) return res.status(404).json({ message: "Todo not found" });
+    res.json({ message: "Todo deleted" });
   } catch (err) {
     res.status(500).json({ message: "Error deleting todo", error: err.message });
   }

@@ -1,0 +1,114 @@
+/* General body styling */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f6d365, #fda085);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Todo container */
+.todo-container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  width: 400px;
+  max-width: 90%;
+}
+
+/* Heading */
+.todo-container h1 {
+  text-align: center;
+  color: #ff6b81;
+  margin-bottom: 25px;
+}
+
+/* Input and add button */
+.todo-container input {
+  width: 70%;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 16px;
+}
+
+.todo-container button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: 0.3s;
+}
+
+.todo-container button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Todo list items */
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+li {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+li.completed {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  text-decoration: line-through;
+  color: #fff;
+}
+
+li:hover {
+  transform: scale(1.02);
+}
+
+/* Status toggle button */
+li button {
+  background: rgba(255,255,255,0.3);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+}
+
+li button:hover {
+  background: rgba(255,255,255,0.6);
+}
+
+/* Scrollbar for long lists */
+ul::-webkit-scrollbar {
+  width: 8px;
+}
+
+ul::-webkit-scrollbar-thumb {
+  background: #ff6b81;
+  border-radius: 10px;
+}
+
+ul::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.05);
+}
