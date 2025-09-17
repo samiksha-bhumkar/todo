@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Check, Undo, Edit2, Trash2, PlusCircle } from "lucide-react";
 
-const API_URL = "https://todo-81hc.onrender.com/api/todos"; // Fixed URL
+const API_URL = "https://todo-3-fkyf.onrender.com/api/todos"; // Fixed URL
 
 function App() {
   const [todos, setTodos] = useState([]);
