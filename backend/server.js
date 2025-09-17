@@ -15,11 +15,7 @@ app.use(express.json());
 // CORS configuration
 // Allow all origins for simplicity during development. For production, replace "*" with your Vercel frontend URL (e.g. "https://todo-frontend.vercel.app")
 const allowedOrigin = process.env.FRONTEND_ORIGIN || "*";
-app.use(cors({
-  origin: allowedOrigin,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+app.use(cors());
 
 // Mount routes
 app.use("/api/todos", todoRoutes);
